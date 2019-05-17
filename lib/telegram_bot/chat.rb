@@ -44,5 +44,9 @@ module TelegramBot
     def kick_chat_member(bot, **kwargs)
       bot.kick_chat_member(chat_id: id, **kwargs)
     end
+
+    def unban_chat_member(bot, **kwargs)
+      bot.unban_chat_member(chat_id: id, **kwargs)
+    end
   end
 end

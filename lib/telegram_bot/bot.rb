@@ -70,6 +70,13 @@ module TelegramBot
       post_message(path: "#{@base_path}/kickChatMember", data: data)
     end
 
+    def unban_chat_member(chat_id:, user_id:)
+      post_message(
+        path: "#{@base_path}/unbanChatMember",
+        data: {chat_id: chat_id, user_id: user_id}
+      )
+    end
+
     def set_webhook(url, allowed_updates: %i(message))
       logger.info "setting webhook url to #{url}, allowed_updates: #{allowed_updates}"
       webhook_request = WebhookRequest.new(url: url, allowed_updates: allowed_updates)
