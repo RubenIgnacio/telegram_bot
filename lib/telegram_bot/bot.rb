@@ -63,6 +63,13 @@ module TelegramBot
       Message.new(post_message(**kwargs))
     end
 
+    def kick_chat_member(chat_id:, user_id:, until_date: nil)
+      logger.info "kicking chat member with id: #{user_id}"
+      data = {chat_id: chat_id, user_id: user_id}
+      data[:until_date] = until_date unless until_date.nil?
+      post_message(path: "#{@base_path}/kickChatMember", data: data)
+    end
+
     def set_webhook(url, allowed_updates: %i(message))
       logger.info "setting webhook url to #{url}, allowed_updates: #{allowed_updates}"
       webhook_request = WebhookRequest.new(url: url, allowed_updates: allowed_updates)

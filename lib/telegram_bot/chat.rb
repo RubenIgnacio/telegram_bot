@@ -40,5 +40,9 @@ module TelegramBot
     def send_message(bot, **kwargs)
       bot.send_message(chat_id: id, **kwargs)
     end
+
+    def kick_chat_member(bot, **kwargs)
+      bot.kick_chat_member(chat_id: id, **kwargs)
+    end
   end
 end
