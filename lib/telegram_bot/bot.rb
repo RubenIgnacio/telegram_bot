@@ -56,21 +56,11 @@ module TelegramBot
       end
     end
 
-    # send_message(chat_id:, text:, parse_mode: nil, disable_web_page_preview: nil, **kwargs)
-    def send_message(*args, **kwargs)
-      chat_id = kwargs.fetch(:chat_id) { args.fetch(0) }
-      text = kwargs.fetch(:text) { args.fetch(1) }
-      parse_mode = kwargs.fetch(:parse_mode) { args[2] }
-      disable_web_page_preview = kwargs.fetch(:disable_web_page_preview) { args[3] }
-
+    def send_message(chat_id:, text:, **kwargs)
       logger.info "sending message: #{text.inspect}"
-      data = {text: text, chat_id: chat_id}
-      data[:parse_mode] = parse_mode unless parse_mode.nil?
-      data[:disable_web_page_preview] = disable_web_page_preview unless disable_web_page_preview.nil?
-
-      args.shift(4)
-      args.unshift("#{@base_path}/sendMessage", data)
-      Message.new(post_message(*args, **kwargs))
+      kwargs[:path] = "#{@base_path}/sendMessage"
+      kwargs[:data] = {text: text, chat_id: chat_id}
+      Message.new(post_message(**kwargs))
     end
 
     def set_webhook(url, allowed_updates: %i(message))
@@ -104,28 +94,17 @@ module TelegramBot
         get_last_updates(opts).map(&:get_message)
       end
 
-      # post_message(path:, data: {}, disable_notification: nil, reply_to_message_id: nil, content_type: nil)
-      def post_message(*args, **kwargs)
-        path = kwargs.fetch(:path) { args.fetch(0) }
-        data = kwargs.fetch(:data) { args.fetch(1, {}) }
-        disable_notification = kwargs.fetch(:disable_notification) { args[2] }
-        reply_to_message_id = kwargs.fetch(:reply_to_message_id) { args[3] }
-        content_type = kwargs.fetch(:content_type) { args[4] }
-
-        data[:disable_notification] = disable_notification unless disable_notification.nil?
-        data[:reply_to_message_id] = reply_to_message_id unless reply_to_message_id.nil?
-
+      def post_message(path:, data: {}, content_type: nil, **kwargs)
+        data.merge!(kwargs)
         if content_type.nil?
           content_type = "application/x-www-form-urlencoded"
           data = URI.encode_www_form(data)
         else
-          content_type = content_type.downcase
+          content_type.downcase!
+          if content_type == "application/json"
+            data = JSON.dump(data)
+          end
         end
-
-        if content_type == "application/json"
-          data = JSON.dump(data)
-        end
-
         @connection.post(path: path, body: data, headers: {"Content-Type" => content_type}).value!
       end
   end
