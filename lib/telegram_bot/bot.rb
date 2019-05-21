@@ -1,10 +1,4 @@
 module TelegramBot
-  class WebhookRequest
-    include Virtus.model
-    attribute :url, String
-    attribute :allowed_updates, [String]
-  end
-
   class Bot
     ENDPOINT = 'https://api.telegram.org/'
     attr_reader :connection
@@ -66,10 +60,9 @@ module TelegramBot
       )
     end
 
-    def set_webhook(url, allowed_updates: %i(message))
-      logger.info "setting webhook url to #{url}, allowed_updates: #{allowed_updates}"
-      webhook_request = WebhookRequest.new(url: url, allowed_updates: allowed_updates)
-      post_message(path: "#{@base_path}/setWebhook", data: webhook_request.to_h)
+    def set_webhook(url:, **kwargs)
+      logger.info "setting webhook url to #{url}"
+      post_message(path: "#{@base_path}/setWebhook", data: {url: url}, **kwargs)
     end
 
     def remove_webhook
