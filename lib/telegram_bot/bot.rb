@@ -5,17 +5,6 @@ module TelegramBot
     attribute :allowed_updates, [String]
   end
 
-  class UpdatesRequest
-    include Virtus.model
-    attribute :offset, Integer
-    attribute :timeout, Integer
-
-    def to_h
-      result = super.select { |_, v| !!v }
-      Hash[result]
-    end
-  end
-
   class Bot
     ENDPOINT = 'https://api.telegram.org/'
     attr_reader :connection
@@ -40,14 +29,14 @@ module TelegramBot
     alias_method :me, :get_me
     alias_method :identity, :me
 
-    def get_updates(opts = {}, &block)
-      return get_last_messages(opts) unless block_given?
+    def get_updates(**kwargs)
+      return get_last_updates(**kwargs) unless block_given?
 
-      opts[:timeout] ||= 50
+      kwargs[:timeout] ||= 50
       logger.info "starting get_updates loop"
       loop do
-        messages = get_last_messages(opts)
-        opts[:offset] = @offset
+        messages = get_last_updates(**kwargs)
+        kwargs[:offset] = @offset
         messages.compact.each do |message|
           next unless message
           logger.info "message from @#{message.chat.friendly_name}: #{message.text.inspect}"
@@ -90,22 +79,17 @@ module TelegramBot
     private
       attr_reader :logger
 
-      def get_last_updates(opts = {})
-        opts[:offset] ||= @offset
-        updates_request = UpdatesRequest.new(opts)
-        path = "#{@base_path}/getUpdates"
-        response = @connection.get(path: path, query: updates_request.to_h)
-        if opts[:fail_silently] && !response.ok?
+      def get_last_updates(fail_silently: nil, **kwargs)
+        kwargs[:offset] ||= @offset
+
+        response = @connection.get(path: "#{@base_path}/getUpdates", query: kwargs)
+        if fail_silently && !response.ok?
           logger.warn "error when getting updates. ignoring due to fail_silently."
           return []
         end
         updates = response.value!.compact.map { |raw_update| Update.new(raw_update) }
         @offset = updates.last.id + 1 if updates.any?
-        updates
-      end
-
-      def get_last_messages(opts = {})
-        get_last_updates(opts).map(&:get_message)
+        updates.map(&:get_update)
       end
 
       def post_message(path:, data: {}, content_type: nil, **kwargs)

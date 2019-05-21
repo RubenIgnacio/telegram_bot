@@ -9,8 +9,8 @@ module TelegramBot
     attribute :channel_post, Message
     attribute :edited_channel_post, Message
 
-    def get_message
-      message || edited_message || channel_post || edited_channel_post
+    def get_update
+      attributes.select { |k, v| v if k != :update_id }.values.first
     end
   end
 end

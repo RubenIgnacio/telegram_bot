@@ -12,9 +12,11 @@ module TelegramBot
     end
 
     Excon::HTTP_VERBS.each do |method_name|
-      define_method(method_name) do |params = {}, &block|
-        request(params.merge(method: method_name), &block)
-      end
+      class_eval <<-DEF, __FILE__, __LINE__ + 1
+        def #{method_name}(params = {}, &block)
+          request(params.merge(method: #{method_name.inspect}), &block)
+        end
+      DEF
     end
   end
 end
