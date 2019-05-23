@@ -12,6 +12,10 @@ VCR.configure do |config|
 end
 
 module TestHelper
+  def new_test_api_response
+    ApiResponse.new(token: ENV['TEST_TOKEN'])
+  end
+
   def new_test_bot
     TelegramBot.new(token: ENV['TEST_TOKEN'])
   end

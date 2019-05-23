@@ -1,12 +1,12 @@
 require 'excon'
 require 'virtus'
 require 'json'
+require "telegram_bot/version"
+require "telegram_bot/null_logger"
+require "telegram_bot/api_response"
 
 module TelegramBot
   {
-    Version: "version",
-    Result: "result",
-    NullLogger: "null_logger",
     User: "user",
     Chat: "chat",
     MessageEntity: "message_entity",
@@ -16,9 +16,7 @@ module TelegramBot
     ReplyKeyboardMarkup: "reply_keyboard_markup",
     ForceReplay: "force_replay",
     Update: "update",
-    ApiResponse: "api_response",
     Bot: "bot",
-    Connection: "connection",
   }.each do |key, val|
     autoload(key, "telegram_bot/#{val}")
   end
