@@ -17,6 +17,7 @@ module TelegramBot
     ForceReplay: "force_replay",
     Update: "update",
     Bot: "bot",
+    ChatMember: "chat_member"
   }.each do |key, val|
     autoload(key, "telegram_bot/#{val}")
   end
