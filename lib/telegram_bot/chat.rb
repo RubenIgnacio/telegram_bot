@@ -56,5 +56,9 @@ module TelegramBot
     def promote_chat_member(bot, **kwargs)
       bot.promote_chat_member(**kwargs.merge(chat_id: id))
     end
+
+    def get_chat(bot)
+      bot.get_chat(chat_id: id)
+    end
   end
 end

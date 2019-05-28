@@ -59,6 +59,10 @@ module TelegramBot
       @connection.post(:promoteChatMember, **kwargs.merge(chat_id: chat_id, user_id: user_id)).result
     end
 
+    def get_chat(chat_id:)
+      Chat.new(@connection.get(:getChat, chat_id: chat_id).result)
+    end
+
     def set_webhook(url:, **kwargs)
       logger.info "setting webhook url to #{url}"
       @connection.post(:setWebhook, url: url, **kwargs).result
