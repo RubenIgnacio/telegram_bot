@@ -37,18 +37,22 @@ module TelegramBot
 
     def send_message(chat_id:, text:, **kwargs)
       logger.info "sending message: #{text.inspect}"
-      response = @connection.post(:sendMessage, text: text, chat_id: chat_id, **kwargs)
+      response = @connection.post(:sendMessage, **kwargs.merge(chat_id: chat_id, text: text))
       Message.new(response.result)
     end
 
     def kick_chat_member(chat_id:, user_id:, **kwargs)
       logger.info "kicking chat member with id: #{user_id}"
-      @connection.post(:kickChatMember, chat_id: chat_id, user_id: user_id, **kwargs).result
+      @connection.post(:kickChatMember, **kwargs.merge(chat_id: chat_id, user_id: user_id)).result
     end
 
     def unban_chat_member(chat_id:, user_id:)
       logger.info "unban chat member with id: #{user_id}"
       @connection.post(:unbanChatMember, chat_id: chat_id, user_id: user_id).result
+    end
+
+    def restrict_chat_member(chat_id:, user_id:, **kwargs)
+      @connection.post(:restrictChatMember, **kwargs.merge(chat_id: chat_id, user_id: user_id)).result
     end
 
     def set_webhook(url:, **kwargs)

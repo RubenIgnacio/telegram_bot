@@ -38,15 +38,19 @@ module TelegramBot
     end
 
     def send_message(bot, **kwargs)
-      bot.send_message(chat_id: id, **kwargs)
+      bot.send_message(**kwargs.merge(chat_id: id))
     end
 
     def kick_chat_member(bot, **kwargs)
-      bot.kick_chat_member(chat_id: id, **kwargs)
+      bot.kick_chat_member(**kwargs.merge(chat_id: id))
     end
 
     def unban_chat_member(bot, **kwargs)
-      bot.unban_chat_member(chat_id: id, **kwargs)
+      bot.unban_chat_member(**kwargs.merge(chat_id: id))
+    end
+
+    def restrict_chat_member(bot, **kwargs)
+      bot.restrict_chat_member(**kwargs.merge(chat_id: id))
     end
   end
 end
