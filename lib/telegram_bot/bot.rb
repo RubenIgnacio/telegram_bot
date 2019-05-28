@@ -11,7 +11,7 @@ module TelegramBot
     end
 
     def get_me
-      @me ||= @connection.get("getMe") { |response| User.new(response.result) }
+      @me ||= User.new(@connection.get("getMe").result)
     end
 
     alias_method :me, :get_me
@@ -37,9 +37,8 @@ module TelegramBot
 
     def send_message(chat_id:, text:, **kwargs)
       logger.info "sending message: #{text.inspect}"
-      @connection.post("sendMessage", text: text, chat_id: chat_id, **kwargs) do |response|
-        Message.new(response.result)
-      end
+      response = @connection.post("sendMessage", text: text, chat_id: chat_id, **kwargs)
+      Message.new(response.result)
     end
 
     def kick_chat_member(chat_id:, user_id:, **kwargs)
