@@ -60,5 +60,9 @@ module TelegramBot
     def get_chat(bot)
       bot.get_chat(chat_id: id)
     end
+
+    def get_chat_members_count(bot)
+      bot.get_chat_members_count(chat_id: id)
+    end
   end
 end
