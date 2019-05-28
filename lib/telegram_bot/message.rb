@@ -12,6 +12,7 @@ module TelegramBot
     attribute :forward_from_chat, Chat
     attribute :forward_from_message_id, Integer
     attribute :forward_signature, String
+    attribute :forward_sender_name, String
     attribute :forward_date, DateTime
     attribute :reply_to_message, Message
     attribute :edit_date, DateTime
