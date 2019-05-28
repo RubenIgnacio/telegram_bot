@@ -11,7 +11,7 @@ module TelegramBot
     end
 
     def get_me
-      @me ||= User.new(@connection.get("getMe").result)
+      @me ||= User.new(@connection.get(:getMe).result)
     end
 
     alias_method :me, :get_me
@@ -37,23 +37,23 @@ module TelegramBot
 
     def send_message(chat_id:, text:, **kwargs)
       logger.info "sending message: #{text.inspect}"
-      response = @connection.post("sendMessage", text: text, chat_id: chat_id, **kwargs)
+      response = @connection.post(:sendMessage, text: text, chat_id: chat_id, **kwargs)
       Message.new(response.result)
     end
 
     def kick_chat_member(chat_id:, user_id:, **kwargs)
       logger.info "kicking chat member with id: #{user_id}"
-      @connection.post("kickChatMember", chat_id: chat_id, user_id: user_id, **kwargs).result
+      @connection.post(:kickChatMember, chat_id: chat_id, user_id: user_id, **kwargs).result
     end
 
     def unban_chat_member(chat_id:, user_id:)
       logger.info "unban chat member with id: #{user_id}"
-      @connection.post("unbanChatMember", chat_id: chat_id, user_id: user_id).result
+      @connection.post(:unbanChatMember, chat_id: chat_id, user_id: user_id).result
     end
 
     def set_webhook(url:, **kwargs)
       logger.info "setting webhook url to #{url}"
-      @connection.post("setWebhook", url: url, **kwargs).result
+      @connection.post(:setWebhook, url: url, **kwargs).result
     end
 
     def remove_webhook
@@ -65,7 +65,7 @@ module TelegramBot
 
       def get_last_updates(fail_silently: nil, **kwargs)
         kwargs[:offset] ||= @offset
-        @connection.get("getUpdates", **kwargs) do |response|
+        @connection.get(:getUpdates, **kwargs) do |response|
           if response.ok?
             response.result.map { |result| Update.new(result) }
           elsif fail_silently
