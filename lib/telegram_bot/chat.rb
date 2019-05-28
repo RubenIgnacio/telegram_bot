@@ -52,5 +52,9 @@ module TelegramBot
     def restrict_chat_member(bot, **kwargs)
       bot.restrict_chat_member(**kwargs.merge(chat_id: id))
     end
+
+    def promote_chat_member(bot, **kwargs)
+      bot.promote_chat_member(**kwargs.merge(chat_id: id))
+    end
   end
 end
