@@ -63,6 +63,10 @@ module TelegramBot
       Chat.new(@connection.get(:getChat, chat_id: chat_id).result)
     end
 
+    def get_chat_administrators(chat_id:)
+      @connection.get(:getChatAdministrators, chat_id: chat_id).result.map { |member| ChatMember.new(member) }
+    end
+
     def get_chat_members_count(chat_id:)
       @connection.get(:getChatMembersCount, chat_id: chat_id).result
     end
