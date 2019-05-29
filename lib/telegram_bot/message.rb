@@ -63,5 +63,9 @@ module TelegramBot
         end
       DEF
     end
+
+    def forward_message(bot, **kwargs)
+      bot.forward_message(**kwargs.merge(chat_id: chat.id, message_id: id))
+    end
   end
 end

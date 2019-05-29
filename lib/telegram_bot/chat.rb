@@ -41,6 +41,10 @@ module TelegramBot
       bot.send_message(**kwargs.merge(chat_id: id))
     end
 
+    def forward_message(bot, **kwargs)
+      bot.forward_message(**kwargs.merge(chat_id: id))
+    end
+
     def kick_chat_member(bot, **kwargs)
       bot.kick_chat_member(**kwargs.merge(chat_id: id))
     end

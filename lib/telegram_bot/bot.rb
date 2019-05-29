@@ -41,6 +41,11 @@ module TelegramBot
       Message.new(response.result)
     end
 
+    def forward_message(chat_id:, from_chat_id:, message_id:, **kwargs)
+      kwargs.merge!(chat_id: chat_id, from_chat_id: from_chat_id, message_id: message_id)
+      Message.new(@connection.post(:forwardMessage, **kwargs).result)
+    end
+
     def kick_chat_member(chat_id:, user_id:, **kwargs)
       logger.info "kicking chat member with id: #{user_id}"
       @connection.post(:kickChatMember, **kwargs.merge(chat_id: chat_id, user_id: user_id)).result
