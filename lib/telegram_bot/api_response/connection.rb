@@ -15,12 +15,11 @@ module TelegramBot
 
       def request(path, **kwargs)
         response = @connection.request(**kwargs.merge(path: "#{@base_path}/#{path}"))
-
-        if response.status == 200
-          response = Response.new(response)
-        else
-          response = ResponseError.new(response)
-        end
+        response = if response.status == 200
+                     Response.new(response)
+                   else
+                     ResponseError.new(response)
+                   end
 
         if block_given?
           yield response
